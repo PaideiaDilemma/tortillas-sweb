@@ -7,6 +7,7 @@
 #include "ProcessRegistry.h"
 #include "File.h"
 #include "Scheduler.h"
+#include "SpinLock.h"
 
 size_t Syscall::syscallException(size_t syscall_number, size_t arg1, size_t arg2, size_t arg3, size_t arg4, size_t arg5)
 {
@@ -71,6 +72,15 @@ void Syscall::pseudols(const char *pathname, char *buffer, size_t size)
 
 void Syscall::exit(size_t exit_code)
 {
+  if (exit_code == 1)
+  {
+    assert(false);
+  }
+  if (exit_code == 2)
+  {
+    SpinLock lock("");
+    lock.release();
+  }
   debug(SYSCALL, "Syscall::EXIT: called, exit_code: %zd\n", exit_code);
   currentThread->kill();
   assert(false && "This should never happen");
