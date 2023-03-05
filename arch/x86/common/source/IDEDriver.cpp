@@ -88,6 +88,8 @@ uint32 IDEDriver::doDeviceDetection()
       else
       {
         outportbp(base_port + 6, (cs % 2 == 0 ? 0xA0 : 0xB0));
+        jiffies = 0;
+        while(inportbp(base_port + 7) & 0x80 && jiffies++ < IO_TIMEOUT);
 
         jiffies = 0;
         while(inportbp(base_port + 7) & 0x80 && jiffies++ < IO_TIMEOUT);
