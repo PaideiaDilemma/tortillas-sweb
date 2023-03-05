@@ -47,6 +47,13 @@ analyze:
     mode: add_as_error
     set_status: FAILED
 
+# Tortillas expect
+  - name: expect_stdout
+    scope: SYSCALL
+    pattern: 'Syscall::write: (.*)'
+    mode: expect_stdout
+    set_status: FAILED
+
 # Kernel panics
   - name: kernel_panics
     scope: 'KERNEL PANIC'
