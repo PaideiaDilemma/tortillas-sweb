@@ -1,0 +1,62 @@
+name: Checks
+
+on:
+  push:
+    branches:
+      - main
+      - extended
+      - panic
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt install qemu-utils -y
+      - name: Run cmake
+        run: |
+          sh setup_cmake.sh
+      - name: Run make in /tmp/sweb
+        run: |
+          cd /tmp/sweb
+          make -j$(nproc)
+
+  tortillas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Checkout Tortillas
+        uses: actions/checkout@v3
+        with:
+          repository: PaideiaDilemma/Tortillas
+          path: tortillas
+
+      - name: Install dependencies
+        run: |
+          sudo apt install -y qemu-utils qemu-system-x86 python3-yaml
+
+      - name: Run tortillas
+        run: |
+          cd tortillas
+          python3 -m tortillas -S ..
+
+        # Upload logs as test artifacts
+        # - uses: actions/upload-artifact@v3
+        # if: always()
+        # with:
+        #   name: test_logs
+        #   path: /tmp/sweb/tortillas/**/out.log
+
+      - name: Adding markdown
+        if: always()
+        run: cat /tmp/sweb/tortillas_summary.md >> $GITHUB_STEP_SUMMARY

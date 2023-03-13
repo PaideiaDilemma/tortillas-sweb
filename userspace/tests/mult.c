@@ -1,3 +1,12 @@
+/*
+--- # Test specification
+category: base
+description: |
+    Multiplies two matrices containing pseudo random numbers
+    and exits with the sum of the resulting matrix.
+expect_exit_codes: [1237619379]
+*/
+
 #include "../../common/include/kernel/syscall-definitions.h"
 
 
@@ -35,7 +44,7 @@ int main()
     {
       axa[x][y]= getRandom();
       bxb[x][y] = getRandom();
-      
+
     }
   }
   for (x=0;x<ARRAY_SIZE;++x)
@@ -48,7 +57,7 @@ int main()
   for (x=0;x<ARRAY_SIZE;++x)
     for (y=0;y<ARRAY_SIZE;++y)
       sum += cxc[x][y];
-  
+
  // printf("Result is %d",sum);
   return sum;
 }
