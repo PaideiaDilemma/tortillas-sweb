@@ -254,17 +254,16 @@ uint32 Terminal::remap(uint32 key)
 
   KeyboardManager * km = KeyboardManager::instance();
 
-  if (isLetter(key))
-  {
-    bool shifted = km->isShift() ^ km->isCaps();
+  bool shifted = km->isShift() ^ km->isCaps();
+  if (!shifted)
+    return key;
 
-    if (shifted)
-      key &= ~0x20;
-  }
-  if (isNumber(key))
-  {
-    if (km->isShift())
-      key = number_table[key - '0'];
-  }
+  if (isLetter(key))
+    key &= ~0x20;
+  else if (isNumber(key))
+    key = number_table[key - '0'];
+  else if (key == '-')
+    key = '_';
+
   return key;
 }
